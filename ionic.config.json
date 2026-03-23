@@ -1,0 +1,7 @@
+{
+  "name": "who-is-who-htl",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular-standalone"
+}
