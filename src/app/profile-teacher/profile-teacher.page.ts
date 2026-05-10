@@ -28,11 +28,13 @@ export class ProfileTeacherPage {
 
   constructor(private router: Router, private profileService: ProfileService) { }
 
-  public saveProfile() {
+  public async saveProfile() {
     if (!this.teacherName) return;
 
     const roleString = this.teacherSubjects ? `Lehrkraft - ${this.teacherSubjects}` : 'Lehrkraft';
-    this.profileService.addProfile(this.teacherName, roleString);
+    const extraInfoString = `Raum: ${this.teacherRoom} | Info: ${this.teacherInfo}`;
+
+    await this.profileService.addProfile(this.teacherName, roleString, extraInfoString);
 
     this.teacherName = '';
     this.teacherSubjects = '';

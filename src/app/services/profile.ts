@@ -1,23 +1,48 @@
 import { Injectable } from '@angular/core';
+import {
+  Firestore,
+  collection,
+  doc,
+  getDoc,
+  addDoc,
+  onSnapshot,
+  query
+} from '@angular/fire/firestore';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProfileService {
-  public profiles = [
-    { id: 1, name: 'Max Mustermann', role: 'Schüler - 4. Klasse', extraInfo: 'Spielt gerne Fußball.' },
-    { id: 2, name: 'Martina Hiesinger', role: 'Lehrkraft', extraInfo: 'Raum 104, Sprechstunde Freitag 3. Stunde.' },
-    { id: 3, name: 'Anna Schmidt', role: 'Schüler - 3. Klasse', extraInfo: 'Klassensprecherin.' }
-  ];
+  constructor(private firestore: Firestore) {}
 
-  constructor() { }
+  public getProfiles(): Observable<any[]> {
+    return new Observable((observer) => {
+      const profilesRef = collection(this.firestore, 'profiles');
+      const q = query(profilesRef);
 
-  public addProfile(name: string, role: string, extraInfo: string = '') {
-    const newId = this.profiles.length > 0 ? Math.max(...this.profiles.map(p => p.id)) + 1 : 1;
-    this.profiles.push({ id: newId, name, role, extraInfo });
+      const unsubscribe = onSnapshot(q, (snapshot) => {
+        const profiles = snapshot.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        observer.next(profiles);
+      }, (error) => {
+        observer.error(error);
+      });
+
+      return () => unsubscribe();
+    });
   }
 
-  public getProfileById(id: number) {
-    return this.profiles.find(p => p.id === id);
+  public async addProfile(name: string, role: string, extraInfo: string = '') {
+    const profilesRef = collection(this.firestore, 'profiles');
+    return addDoc(profilesRef, { name, role, extraInfo });
+  }
+
+  public async getProfileById(id: string) {
+    const profileRef = doc(this.firestore, `profiles/${id}`);
+    const docSnap = await getDoc(profileRef);
+    return docSnap.exists() ? { id: docSnap.id, ...docSnap.data() } : undefined;
   }
 }

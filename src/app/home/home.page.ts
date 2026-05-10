@@ -1,16 +1,17 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent,
-  IonSearchbar, IonList, IonListHeader, IonItem,
-  IonLabel, IonAvatar, IonFab, IonFabButton, IonIcon,
-  IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton, ViewDidEnter
+  IonCard, IonCardContent, IonButton, IonSearchbar,
+  IonList, IonListHeader, IonLabel, IonItem,
+  IonAvatar, IonFab, IonFabButton, IonFabList, IonIcon, IonButtons
 } from '@ionic/angular/standalone';
 import { addIcons } from 'ionicons';
-import { add, closeOutline } from 'ionicons/icons';
+import { add, person, briefcase, logOutOutline } from 'ionicons/icons';
 import { ProfileService } from '../services/profile';
 import { AuthService } from '../services/auth';
+import { Observable, BehaviorSubject, combineLatest, map } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -19,61 +20,52 @@ import { AuthService } from '../services/auth';
   imports: [
     CommonModule, RouterModule,
     IonHeader, IonToolbar, IonTitle, IonContent,
-    IonSearchbar, IonList, IonListHeader, IonItem,
-    IonLabel, IonAvatar, IonFab, IonFabButton, IonIcon,
-    IonCard, IonCardHeader, IonCardTitle, IonCardContent, IonButton
-  ],
+    IonCard, IonCardContent, IonButton, IonSearchbar,
+    IonList, IonListHeader, IonLabel, IonItem,
+    IonAvatar, IonFab, IonFabButton, IonFabList, IonIcon, IonButtons
+  ]
 })
-export class HomePage implements ViewDidEnter {
-  public filteredProfiles: any[] = [];
-  public showLoginCard: boolean = true;
-  private currentQuery: string = '';
+export class HomePage implements OnInit {
+  public filteredProfiles$!: Observable<any[]>;
+  private searchTerm$ = new BehaviorSubject<string>('');
 
   constructor(
     private profileService: ProfileService,
     public authService: AuthService,
-    private router: Router
+    public router: Router
   ) {
-    addIcons({ add, closeOutline });
+    addIcons({ add, person, briefcase, logOutOutline });
   }
 
-  ionViewDidEnter() {
-    this.refreshList();
-    if (this.authService.isLoggedIn) {
-      this.showLoginCard = false;
-    }
+  ngOnInit() {
+    this.filteredProfiles$ = combineLatest([
+      this.profileService.getProfiles(),
+      this.searchTerm$
+    ]).pipe(
+      map(([profiles, term]) => {
+        const search = term.toLowerCase();
+        return profiles.filter(p =>
+          !search ||
+          p.name?.toLowerCase().includes(search) ||
+          p.role?.toLowerCase().includes(search)
+        );
+      })
+    );
   }
 
   public handleInput(event: any) {
-    this.currentQuery = event.target.value.toLowerCase();
-    this.refreshList();
+    this.searchTerm$.next(event.target.value || '');
   }
 
-  private refreshList() {
-    const all = this.profileService.profiles;
-    this.filteredProfiles = this.currentQuery
-      ? all.filter(p => p.name.toLowerCase().includes(this.currentQuery) || p.role.toLowerCase().includes(this.currentQuery))
-      : [...all];
+  public async logout() {
+    await this.authService.logout();
+    this.router.navigate(['/login']);
   }
 
   public goToDetail(profile: any) {
-    if (!this.authService.isLoggedIn) {
-      this.router.navigate(['/login']);
-      return;
-    }
-
-    if (profile.role.includes('Schüler')) {
-      this.router.navigate(['/detail-student', profile.id]);
-    } else {
-      this.router.navigate(['/detail-teacher', profile.id]);
-    }
-  }
-
-  public checkAction(targetRoute: string) {
-    if (this.authService.isLoggedIn) {
-      this.router.navigate([targetRoute]);
-    } else {
-      this.router.navigate(['/login']);
+    if (profile?.role) {
+      const target = profile.role.includes('Schüler') ? 'detail-student' : 'detail-teacher';
+      this.router.navigate([target, profile.id]);
     }
   }
 }

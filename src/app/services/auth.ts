@@ -1,16 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, authState } from '@angular/fire/auth';
+import {
+  Auth,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
+  authState,
+  User
+} from '@angular/fire/auth';
+import { ReplaySubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
   public isLoggedIn: boolean = false;
+  // ReplaySubject speichert den letzten Status für sofortige Verfügbarkeit
+  public authState$ = new ReplaySubject<User | null>(1);
 
   constructor(private auth: Auth) {
-    // Überwacht live, ob der User bei Firebase eingeloggt ist
     authState(this.auth).subscribe((user) => {
       this.isLoggedIn = !!user;
+      this.authState$.next(user);
     });
   }
 

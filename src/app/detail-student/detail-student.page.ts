@@ -27,10 +27,10 @@ export class DetailStudentPage implements OnInit {
     addIcons({ personCircleOutline, bookOutline });
   }
 
-  ngOnInit() {
+  async ngOnInit() {
     const idParam = this.route.snapshot.paramMap.get('id');
     if (idParam) {
-      this.profile = this.profileService.getProfileById(parseInt(idParam, 10));
+      this.profile = await this.profileService.getProfileById(idParam);
     }
   }
 }

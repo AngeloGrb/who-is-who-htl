@@ -27,11 +27,12 @@ export class ProfileStudentPage {
 
   constructor(private router: Router, private profileService: ProfileService) { }
 
-  public saveProfile() {
+  public async saveProfile() {
     if (!this.studentName) return;
 
     const roleString = this.studentClass ? `Schüler - ${this.studentClass}` : 'Schüler';
-    this.profileService.addProfile(this.studentName, roleString);
+
+    await this.profileService.addProfile(this.studentName, roleString, this.aboutMe);
 
     this.studentName = '';
     this.studentClass = '';
