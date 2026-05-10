@@ -1,0 +1,32 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Login</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div style="text-align: center; margin-bottom: 2rem; margin-top: 2rem;">
+    <h2>Who is Who - HTL</h2>
+    <p>Bitte melde dich an.</p>
+  </div>
+
+  <ion-list>
+    <ion-item>
+      <ion-input [(ngModel)]="email" type="email" label="E-Mail" labelPlacement="floating" placeholder="beispiel@htl.at"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-input [(ngModel)]="passwort" type="password" label="Passwort" labelPlacement="floating" placeholder="***"></ion-input>
+    </ion-item>
+  </ion-list>
+
+  <ion-text color="danger" *ngIf="errorMessage" style="margin-top: 10px; display: block; text-align: center;">
+    {{ errorMessage }}
+  </ion-text>
+
+  <ion-button (click)="login()" expand="block" style="margin-top: 20px;">Einloggen</ion-button>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <ion-text color="medium">Neu hier?</ion-text><br>
+    <ion-button fill="clear" routerLink="/register">Jetzt registrieren</ion-button>
+  </div>
+</ion-content>

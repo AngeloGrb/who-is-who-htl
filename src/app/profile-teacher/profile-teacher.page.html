@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Lehrer-Profil anlegen</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-input [(ngModel)]="teacherName" label="Titel & Name" labelPlacement="floating" placeholder="z.B. Prof. Martina Hiesinger"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="teacherSubjects" label="Unterrichtsfächer" labelPlacement="floating" placeholder="z.B. ITP, Mathematik"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="teacherRoom" label="Raum / Sprechstunde" labelPlacement="floating" placeholder="z.B. Raum 104, Freitag 3. Stunde"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-textarea [(ngModel)]="teacherInfo" label="Zusatzinfos" labelPlacement="floating" placeholder="Informationen für die Schüler..."></ion-textarea>
+    </ion-item>
+  </ion-list>
+
+  <ion-button (click)="saveProfile()" expand="block" style="margin-top: 20px;">Profil speichern</ion-button>
+</ion-content>

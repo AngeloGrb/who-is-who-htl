@@ -1,0 +1,26 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Schüler-Profil anlegen</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item>
+      <ion-input [(ngModel)]="studentName" label="Vollständiger Name" labelPlacement="floating" placeholder="z.B. Max Mustermann"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="studentClass" label="Klasse" labelPlacement="floating" placeholder="z.B. 4BHIT"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-textarea [(ngModel)]="aboutMe" label="Über mich" labelPlacement="floating" placeholder="Ein paar Worte..."></ion-textarea>
+    </ion-item>
+  </ion-list>
+
+  <ion-button (click)="saveProfile()" expand="block" style="margin-top: 20px;">Profil speichern</ion-button>
+</ion-content>

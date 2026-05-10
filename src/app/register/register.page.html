@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Registrierung</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div style="text-align: center; margin-bottom: 2rem; margin-top: 2rem;">
+    <h2>Account erstellen</h2>
+  </div>
+
+  <ion-list>
+    <ion-item>
+      <ion-input [(ngModel)]="email" type="email" label="E-Mail" labelPlacement="floating" placeholder="beispiel@htl.at"></ion-input>
+    </ion-item>
+
+    <ion-item>
+      <ion-input [(ngModel)]="passwort" type="password" label="Passwort" labelPlacement="floating" placeholder="***"></ion-input>
+    </ion-item>
+
+    <ion-text color="danger" *ngIf="errorMessage" style="margin-top: 10px; display: block; text-align: center;">
+      {{ errorMessage }}
+    </ion-text>
+
+    <ion-item>
+      <ion-select [(ngModel)]="rolle" label="Ich bin..." labelPlacement="floating">
+        <ion-select-option value="schueler">Schüler</ion-select-option>
+        <ion-select-option value="lehrer">Lehrkraft</ion-select-option>
+      </ion-select>
+    </ion-item>
+  </ion-list>
+
+  <ion-button (click)="register()" expand="block" style="margin-top: 20px;">Registrieren</ion-button>
+
+  <ion-button fill="clear" expand="block" routerLink="/login" color="medium" style="margin-top: 10px;">Zurück zum Login</ion-button>
+</ion-content>
